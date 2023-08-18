@@ -1,0 +1,70 @@
+TARGET = main
+
+# Define linker script location and architecture
+SCRIPT_LOCATION = .\Device
+LD_SCRIPT_NAME = linker.ld
+MCU_SPEC = cortex-m0
+
+# Toolchain definitions (ARM defaults)
+CC = arm-none-eabi-gcc
+AS = arm-none-eabi-as
+LD = arm-none-eabi-ld
+OC = arm-none-eabi-objcopy
+OD = arm-none-eabi-objdump
+OS = arm-none-eabi-size
+
+# Assembly Directive
+ASFLAGS += -c -O0 -mcpu=$(MCU_SPEC) -mthumb -Wall
+# Set error messages to appear on a single line
+# ASFLAGS += -fmessage-length=0
+
+# C compilation directives
+CFLAGS += -mcpu=$(MCU_SPEC) -mthumb -Wall -g -std=c99 -mlittle-endian
+# Set error messages to appear on a single line
+# CFLAGS += -fmessage-length=0
+# Set system to ignore junk
+CFLAGS += --specs=nosys.specs
+CFLAGS += -I inc -I src
+
+# Linker Directives (do not include stdlib)
+LSCRIPT = $(SCRIPT_LOCATION)/$(LD_SCRIPT_NAME)
+LFLAGS += -mcpu=$(MCU_SPEC) -mthumb -Wall --specs=nosys.specs -nostdlib -lgcc 
+LFLAGS += -T$(LSCRIPT)
+
+AS_SRC = $(SCRIPT_LOCATION)\core.S
+C_SRC = .\src\main.c
+
+OBJS = $(AS_SRC:.S=.o)
+OBJS += $(C_SRC:.c=.o)
+
+# Recipes
+# Call by typing 'make'
+.PHONY: all
+all: $(TARGET).bin
+
+%.o: %.S
+	$(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
+
+$(TARGET).elf: $(OBJS)
+	$(CC) $^ $(LFLAGS) -o $@
+
+$(TARGET).bin: $(TARGET).elf
+	$(OC) -S -O binary $< $@
+	$(OS) $<
+
+# target extended-remote :4242 | load
+.PHONY: dbg
+dbg: $(TARGET).elf
+	arm-none-eabi-gdb $(TARGET).elf
+
+.PHONY: memChk
+memChk: $(TARGET).elf
+	arm-none-eabi-nm $(TARGET).elf
+
+# rm -f $(OBJS) $(TARGET).elf (for Linux machines)
+.PHONY: clean
+clean:
+	del $(OBJS) $(TARGET).elf $(TARGET).bin
