@@ -1,4 +1,5 @@
 TARGET = main
+START_ADDRESS = 0x08000000
 
 # Define linker script location and architecture
 SCRIPT_LOCATION = .\Device
@@ -32,7 +33,7 @@ LFLAGS += -mcpu=$(MCU_SPEC) -mthumb -Wall --specs=nosys.specs -nostdlib -lgcc
 LFLAGS += -T$(LSCRIPT)
 
 AS_SRC = $(SCRIPT_LOCATION)\core.S
-C_SRC = .\src\main.c
+C_SRC = .\src\$(TARGET).c
 
 OBJS = $(AS_SRC:.S=.o)
 OBJS += $(C_SRC:.c=.o)
@@ -56,15 +57,24 @@ $(TARGET).bin: $(TARGET).elf
 	$(OS) $<
 
 # target extended-remote :4242 | load
-.PHONY: dbg
-dbg: $(TARGET).elf
+.PHONY: gdb
+gdb: $(TARGET).elf
 	arm-none-eabi-gdb $(TARGET).elf
 
 .PHONY: memChk
 memChk: $(TARGET).elf
 	arm-none-eabi-nm $(TARGET).elf
 
+.PHONY: s
+s: 
+	del $(TARGET).s
+	gcc -S -fverbose-asm -O2 $(C_SRC) -I inc
+
 # rm -f $(OBJS) $(TARGET).elf (for Linux machines)
 .PHONY: clean
 clean:
 	del $(OBJS) $(TARGET).elf $(TARGET).bin
+
+.PHONY: flash
+flash:
+	st-flash write $(TARGET).bin $(START_ADDRESS)

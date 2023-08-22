@@ -14,4 +14,6 @@ Commands for GDB:
 - [] ptype <var_name> ~ gets variable type (does not work for uints)
 - [] whatis <var_name> ~ gets variable type (works for uints)
 - [] explore  <var_name> ~ gets variable type (works for uints)
-- [] breakpoint <line of code to stop at>
+- [] br <line of code to stop at>
+
+- kill, run, continue
