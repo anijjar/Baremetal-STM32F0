@@ -28,10 +28,10 @@ CFLAGS += --specs=nosys.specs
 CFLAGS += -I inc -I src
 
 # Linker Directives (do not include stdlib)
-LSCRIPT = $(SCRIPT_LOCATION)/$(LD_SCRIPT_NAME)
 LFLAGS += -mcpu=$(MCU_SPEC) -mthumb -Wall --specs=nosys.specs -nostdlib -lgcc 
 LFLAGS += -T$(LSCRIPT)
 
+LSCRIPT = $(SCRIPT_LOCATION)\$(LD_SCRIPT_NAME)
 AS_SRC = $(SCRIPT_LOCATION)\core.S
 C_SRC = .\src\$(TARGET).c
 
@@ -68,7 +68,7 @@ memChk: $(TARGET).elf
 .PHONY: s
 s: 
 	del $(TARGET).s
-	gcc -S -fverbose-asm -O2 $(C_SRC) -I inc
+	gcc -S -fverbose-asm -O2 $(C_SRC)
 
 # rm -f $(OBJS) $(TARGET).elf (for Linux machines)
 .PHONY: clean

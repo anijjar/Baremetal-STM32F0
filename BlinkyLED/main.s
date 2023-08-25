@@ -65,13 +65,43 @@ L2:
 	jmp	L2	 #
 	.cfi_endproc
 LFE0:
+	.p2align 4,,15
+	.globl	_PushButtonExample
+	.def	_PushButtonExample;	.scl	2;	.type	32;	.endef
+_PushButtonExample:
+LFB1:
+	.cfi_startproc
+	movl	1073877012, %eax	 # MEM[(struct RCC_TypeDef *)1073876992B].AHBENR, _3
+	orl	$524288, %eax	 #, _4
+	movl	%eax, 1073877012	 # _4, MEM[(struct RCC_TypeDef *)1073876992B].AHBENR
+	movl	1207961600, %eax	 # MEM[(struct GPIO_TypeDef *)1207961600B].MODER, _6
+	orl	$65536, %eax	 #, _7
+	movl	%eax, 1207961600	 # _7, MEM[(struct GPIO_TypeDef *)1207961600B].MODER
+	movl	1073877012, %eax	 # MEM[(struct RCC_TypeDef *)1073876992B].AHBENR, _9
+	orl	$131072, %eax	 #, _10
+	movl	%eax, 1073877012	 # _10, MEM[(struct RCC_TypeDef *)1073876992B].AHBENR
+	movl	1207959564, %eax	 # MEM[(struct GPIO_TypeDef *)1207959552B].PUPDR, _12
+	orl	$2, %eax	 #, _13
+	movl	%eax, 1207959564	 # _13, MEM[(struct GPIO_TypeDef *)1207959552B].PUPDR
+	.p2align 4,,10
+L4:
+	movl	1207959568, %eax	 # MEM[(struct GPIO_TypeDef *)1207959552B].IDR, _15
+	movl	1207961620, %edx	 # MEM[(struct GPIO_TypeDef *)1207961600B].ODR, _18
+	andl	$1, %eax	 #, r
+	sall	$8, %eax	 #, tmp116
+	notl	%eax	 # tmp117
+	andl	%edx, %eax	 # _18, _23
+	movl	%eax, 1207961620	 # _23, MEM[(struct GPIO_TypeDef *)1207961600B].ODR
+	jmp	L4	 #
+	.cfi_endproc
+LFE1:
 	.def	___main;	.scl	2;	.type	32;	.endef
 	.section	.text.startup,"x"
 	.p2align 4,,15
 	.globl	_main
 	.def	_main;	.scl	2;	.type	32;	.endef
 _main:
-LFB1:
+LFB2:
 	.cfi_startproc
 	pushl	%ebp	 #
 	.cfi_def_cfa_offset 8
@@ -80,17 +110,7 @@ LFB1:
 	.cfi_def_cfa_register 5
 	andl	$-16, %esp	 #,
 	call	___main	 #
-	movl	1073877012, %eax	 # MEM[(struct RCC_TypeDef *)1073876992B].AHBENR, _2
-	orl	$524288, %eax	 #, _3
-	movl	%eax, 1073877012	 # _3, MEM[(struct RCC_TypeDef *)1073876992B].AHBENR
-	movl	1207961600, %eax	 # MEM[(struct GPIO_TypeDef *)1207961600B].MODER, _5
-	orl	$65536, %eax	 #, _6
-	movl	%eax, 1207961600	 # _6, MEM[(struct GPIO_TypeDef *)1207961600B].MODER
-	movl	1207961624, %eax	 # MEM[(struct GPIO_TypeDef *)1207961600B].BSRR, _8
-	orb	$1, %ah	 #, _9
-	movl	%eax, 1207961624	 # _9, MEM[(struct GPIO_TypeDef *)1207961600B].BSRR
-L4:
-	jmp	L4	 #
+	call	_PushButtonExample	 #
 	.cfi_endproc
-LFE1:
+LFE2:
 	.ident	"GCC: (MinGW.org GCC-6.3.0-1) 6.3.0"
