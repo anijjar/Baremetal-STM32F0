@@ -1,0 +1,26 @@
+
+
+# Getting Started with Debugging
+- Run "st-util" on power shell if using GDB
+- clean up the directory with "make clean"
+- compile and assemble files using "make"
+- launch GDB using "make gdb"
+- Type "target extended-remote :4242" in GDB (4242 is from st-util)
+- Type "run" to start code
+- See commands below
+
+This will only work on the stm32f0308-Discovery board. The linker and core files need to be rewritten otherwise.
+
+## Commands for GDB:
+- continue ~ runs the program until it encounters breakpoint
+- step ~ walk line by line in the program
+- load ~ upload code to stm
+- run ~ run the program
+- kill ~ kill the program
+- /x ~ print contents of an address
+- print <var_name> ~ gets variable value
+- ptype <var_name> ~ gets variable type (does not work for uints)
+- whatis <var_name> ~ gets variable type (works for uints)
+- explore  <var_name> ~ gets variable type (works for uints)
+- br <line of code to stop at>
+- Bt ~ prints summary of how the program got to where it is. 

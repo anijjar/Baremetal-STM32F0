@@ -1,0 +1,78 @@
+TARGET = main
+START_ADDRESS = 0x08000000
+MCU_SPEC = cortex-m0
+
+# Toolchain definitions (ARM defaults)
+CC = arm-none-eabi-gcc
+AS = arm-none-eabi-as
+LD = arm-none-eabi-ld
+OC = arm-none-eabi-objcopy
+OD = arm-none-eabi-objdump
+OS = arm-none-eabi-size
+
+# Assembly Directive
+ASFLAGS += -c -O0 -mcpu=$(MCU_SPEC) -mthumb -Wall
+# Set error messages to appear on a single line
+# ASFLAGS += -fmessage-length=0
+
+# C compilation directives
+CFLAGS += -mcpu=$(MCU_SPEC) -mthumb -Wall -g -std=c99 -mlittle-endian
+# Set error messages to appear on a single line
+# CFLAGS += -fmessage-length=0
+# Set system to ignore junk
+CFLAGS += --specs=nosys.specs
+CFLAGS += -I inc -I src
+
+# Linker Directives (do not include stdlib)
+LFLAGS += -mcpu=$(MCU_SPEC) -mthumb -Wall --specs=nosys.specs -nostdlib -lgcc 
+LFLAGS += -T$(LSCRIPT)
+
+LSCRIPT = .\Device\linker.ld
+AS_SRC = .\Device\core.S
+C_SRC = .\src\$(TARGET).c
+
+INCLUDE  =  -I.\inc
+INCLUDE  += -I.\lib\CMSIS\Device\ST\STM32F0xx\Include
+INCLUDE  += -I.\lib\CMSIS\Include
+
+OBJS = $(AS_SRC:.S=.o)
+OBJS += $(C_SRC:.c=.o)
+
+# Recipes
+%.o: %.S
+	$(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
+
+$(TARGET).elf: $(OBJS)
+	$(CC) $^ $(LFLAGS) -o $@
+
+$(TARGET).bin: $(TARGET).elf
+	$(OC) -S -O binary $< $@
+	$(OS) $<
+
+
+.PHONY: all
+all: $(TARGET).bin
+
+.PHONY: gdb
+gdb: $(TARGET).elf
+	arm-none-eabi-gdb $(TARGET).elf
+
+.PHONY: memChk
+memChk: $(TARGET).elf
+	arm-none-eabi-nm $(TARGET).elf
+
+.PHONY: s
+s: $(TARGET).bin
+	gcc $(INCLUDE) -S -fverbose-asm -O2 $(C_SRC)
+
+.PHONY: clean
+clean:
+	del $(OBJS) $(TARGET).elf $(TARGET).bin
+	del $(TARGET).s
+
+.PHONY: flash
+flash:
+	st-flash write $(TARGET).bin $(START_ADDRESS)
