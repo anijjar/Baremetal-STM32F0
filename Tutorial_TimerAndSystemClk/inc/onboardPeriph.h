@@ -13,14 +13,12 @@ typedef enum {
 #define ONBOARD_BLUE_LED_PIN 8 //PC8
 #define ONBOARD_GREEN_LED_PIN 9 //PC9
 
-const GPIO_TypeDef * ONBOARD_BLUE_LED_PORT = GPIOC;
-const GPIO_TypeDef * ONBOARD_GREEN_LED_PORT = GPIOC;
+#define ONBOARD_BLUE_LED_PORT GPIOC
+#define ONBOARD_GREEN_LED_PORT GPIOC
 
 #define ONBOARD_LED_BLUE_DEFAULT_STATE LED_OFF
 #define ONBOARD_LED_GREEN_DEFAULT_STATE LED_OFF
 
-volatile led_state_t onboard_blue_led_state = ONBOARD_LED_BLUE_DEFAULT_STATE;
-volatile led_state_t onboard_green_led_state = ONBOARD_LED_GREEN_DEFAULT_STATE;
 
 
 void onboard_led_blue_init();

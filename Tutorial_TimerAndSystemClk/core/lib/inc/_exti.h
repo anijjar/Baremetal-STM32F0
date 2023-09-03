@@ -27,7 +27,9 @@ typedef enum {
 
 // @brief configure EXTI Lines for GPIO only.
 // pin = 0 to 15
-extern void EXTI_GPIO_Init(uint8_t pin, Syscfg_exticr_t port, Exti_trigger_t trigger, IRQn_Type IRQn, NVIC_Priority_t priority);
+void EXTI_GPIO_Init(uint8_t pin, Syscfg_exticr_t port, Exti_trigger_t trigger, IRQn_Type IRQn, NVIC_Priority_t priority);
+
+void NVIC_Enable_Interrupt(IRQn_Type IRQn, NVIC_Priority_t priority);
 
 // See vector_tables for callback names to redefine.
 

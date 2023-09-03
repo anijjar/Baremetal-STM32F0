@@ -10,7 +10,7 @@ void onboard_pushButton_init() {
 
 void onboard_pushbutton_interrupt(FunctionalState state) {
     if(state == ENABLE){
-        EXTI_GPIO_Init(PUSH_BUTTON_PIN, SYSCFG_EXTICR_GPIOA, EXTI_TRIGGER_RISING, EXTI0_1_IRQn, NVIC_PRIORITY_3);
+        EXTI_GPIO_Init(ONBOARD_PUSH_BUTTON_PIN, SYSCFG_EXTICR_GPIOA, EXTI_TRIGGER_RISING, EXTI0_1_IRQn, NVIC_PRIORITY_3);
     } else {
         // TODO: Create exti function to disable interrupt
     }

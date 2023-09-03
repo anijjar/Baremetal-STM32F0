@@ -28,5 +28,15 @@ This will only work on the stm32f0308-Discovery board. The linker and core files
 # STM Clock
 Using the PLL, we can raise the 8MHz clock into 48MHz. This increases current consumption.
 
-Using an external Clock would increase accuracy. 
-PLL takes time to stabalize.
+Using an external Clock would increase accuracy. PLL takes time to stabalize, so applications requiring quick switches from sleep are unideal.
+
+# Flash Memory Latency
+The flash memory locations have a max speed of 24MHz. Therefore, when using clock speeds >24MHz, we need to include wait states to ensure the data is read completly. Ie, add NOP instructions to the assembly.
+
+| Speed | Wait States |
+| ----- | ----------- |
+| <=24MHz  | 0  |
+| 24-48MHz | 1 |
+| 48-72MHz | 2 |
+
+We can improve performance by using the "Flash Prefetch Buffer" to fetch a few more instructions.

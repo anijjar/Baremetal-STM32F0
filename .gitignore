@@ -2,3 +2,8 @@
 .vscode
 
 *\main.s
+
+**\*.o
+
+*\main.bin
+*\main.elf

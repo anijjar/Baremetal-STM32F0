@@ -21,12 +21,13 @@ static void _Config_EXTI_GPIO( uint8_t pin, Syscfg_exticr_t port, Exti_trigger_t
     SET_BIT( EXTI->FTSR, (trigger & 0x2) << pin);
 }
 
-static void _Enable_EXTI_GPIO( IRQn_Type IRQn, NVIC_Priority_t priority ) {
+void NVIC_Enable_Interrupt( IRQn_Type IRQn, NVIC_Priority_t priority ) {
     NVIC_SetPriority(IRQn, priority);
     NVIC_EnableIRQ(IRQn);
 }
 
-extern void EXTI_GPIO_Init( uint8_t pin, Syscfg_exticr_t port, Exti_trigger_t trigger, IRQn_Type IRQn, NVIC_Priority_t priority ){
+void EXTI_GPIO_Init( uint8_t pin, Syscfg_exticr_t port, Exti_trigger_t trigger, IRQn_Type IRQn, NVIC_Priority_t priority ){
     _Config_EXTI_GPIO(pin, port, trigger, IRQn);
-    _Enable_EXTI_GPIO(IRQn, priority);
+    NVIC_Enable_Interrupt(IRQn, priority);
 }
+
