@@ -2,19 +2,19 @@
 #include "_rcc.h"
 
 void _SYSTEM_CORE_CLOCK_SETUP(){
-    // Enable Prefetch (fetch several instructions)
-    SET_BIT(FLASH->ACR, FLASH_ACR_PRFTBE);
 
     #ifdef _ENABLE_PLL_SYSTEM_CLOCK
         // Set the speed of the flash memory
         if(CORE_CLOCK_HZ > 24000000U){
             // Zero wait states for <=24MHz, 1 for >24MHz
             SET_BIT(FLASH->ACR, FLASH_ACR_LATENCY);
+            // Enable Prefetch (fetch several instructions)
+            SET_BIT(FLASH->ACR, FLASH_ACR_PRFTBE);
         }
 
         // Define PLL speed
-        RCC->CFGR |= RCC_CFGR_PLLSRC | PLL_MULT;
-        RCC->CFGR2 = PLL_DIV;
+        CLEAR_BIT(RCC->CFGR, RCC_CFGR_PLLSRC);
+        SET_BIT(RCC->CFGR, PLL_MULT);
 
         // Turn PLL on and wait for it to be ready
         SET_BIT(RCC->CR, RCC_CR_PLLON);

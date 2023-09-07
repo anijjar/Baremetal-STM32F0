@@ -16,13 +16,14 @@ This will only work on the stm32f0308-Discovery board. The linker and core files
 - step ~ walk line by line in the program
 - load ~ upload code to stm
 - run ~ run the program
+- info <> ~ typing b gives info on breakpoints\
 - kill ~ kill the program
 - /x ~ print contents of an address
 - print <var_name> ~ gets variable value
 - ptype <var_name> ~ gets variable type (does not work for uints)
 - whatis <var_name> ~ gets variable type (works for uints)
 - explore  <var_name> ~ gets variable type (works for uints)
-- br <line of code to stop at>
+- br <line of code to stop at> | br filename:line
 - Bt ~ prints summary of how the program got to where it is. 
 
 # STM Clock

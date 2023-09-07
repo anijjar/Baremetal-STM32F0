@@ -10,19 +10,23 @@ void TIM3_IRQHandler(){
   }
 }
 
+// Toggling this way reduces the bounce
+void EXTI0_1_IRQHandler(void){
+  if(EXTI->PR & (1 << ONBOARD_PUSH_BUTTON_PIN)) {
+    led_toggle(ONBOARD_GREEN_LED_PIN, ONBOARD_GREEN_LED_PORT);
+    SET_BIT(EXTI->PR, EXTI_PR_PR0);
+  }
+}
+
 int main(void) {
   _SYSTEM_CORE_CLOCK_SETUP();
+  onboard_led_green_init();
   onboard_led_blue_init();
+  onboard_pushButton_init();
+  onboard_pushbutton_interrupt(ENABLE);
 
-  sTIMx_t * ptr_tim = &timer_3;
-  ptr_tim->TIMx = TIM3;
-  ptr_tim->rcc = RCC->APB1ENR;
-  ptr_tim->clk_bit = RCC_APB1ENR_TIM3EN;
-  ptr_tim->IRQn = TIM3_IRQn;
-  ptr_tim->nvic_priority = NVIC_PRIORITY_2;
-  ptr_tim->count_mode = TIMER_COUNT_UP;
-  ptr_tim->one_pulse_mode = TIMER_ONE_PULSE_MODE_OFF;
-  TIMx_Counter_Init(ptr_tim, 1000, CORE_CLOCK_HZ/1000);
+  TIMx_Init(TIM3, 0x0000, NVIC_PRIORITY_3);
+  Counter_Init(TIM3, 1000, CORE_CLOCK_HZ/100000);
 
 
   for(;;);

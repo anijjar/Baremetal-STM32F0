@@ -16,7 +16,7 @@ void onboard_pushbutton_interrupt(FunctionalState state) {
     }
 }
 
-// Uncomment this to get 
+// Uncomment this to get interrupt working
 // Toggling this way reduces the bounce
 // void EXTI0_1_IRQHandler(void){
 //   if(EXTI->PR & (1 << PUSH_BUTTON_PIN)) {
