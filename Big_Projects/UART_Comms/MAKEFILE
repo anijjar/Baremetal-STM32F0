@@ -1,0 +1,99 @@
+TARGET = main
+START_ADDRESS = 0x8000000
+MCU_SPEC = cortex-m0
+
+# Toolchain definitions (ARM defaults)
+CC = arm-none-eabi-gcc
+AS = arm-none-eabi-as
+LD = arm-none-eabi-ld
+OC = arm-none-eabi-objcopy
+OD = arm-none-eabi-objdump
+OS = arm-none-eabi-size
+
+# Assembly Directives
+# Future note: do not combine vector table to the Afile.
+# it worked before because we had it in the same file.
+# but when in different files, it needs to be added individually
+# to the object name. otherwise Bin file wont be created.
+AFILE = .\core\bootloader\bootloader.s
+VECTOR_TABLE = .\vector_tables\STM32F030R8T6.s
+ASFLAGS = -c 
+ASFLAGS += -O0 
+ASFLAGS += -mcpu=$(MCU_SPEC) 
+ASFLAGS += -mthumb 
+ASFLAGS += -Wall
+
+# C compiler Directives
+CFILE = .\src\$(TARGET).c
+CFILE += .\src\led.c
+CFILE += .\src\pushButton.c
+CFLAGS = -mcpu=$(MCU_SPEC)
+CFLAGS += -mthumb
+CFLAGS += -Wall
+CFLAGS += -g
+CFLAGS += -std=c99
+CFLAGS += -mlittle-endian
+CFLAGS += --specs=nosys.specs
+
+# C compiler - Libraries
+LIB_BABA = .\core\lib\src\_gpio.c
+LIB_BABA += .\core\lib\src\_rcc.c
+LIB_BABA += .\core\lib\src\_uart.c
+LIB_BABA += .\core\lib\src\circularBuffer.c
+
+# Linker Directives
+LSCRIPT = .\core\linker\STM32F030R8T6.ld
+LFLAGS = -mcpu=$(MCU_SPEC)
+LFLAGS += -mthumb
+LFLAGS += -Wall
+LFLAGS += --specs=nosys.specs
+LFLAGS += -nostdlib
+LFLAGS += -lgcc
+LFLAGS += -T$(LSCRIPT)
+
+INCLUDE = -I inc
+INCLUDE += -I .\core\device_header
+INCLUDE += -I .\core\lib\inc
+
+OBJS = $(AFILE:.S=.o)
+OBJS += $(VECTOR_TABLE:.S=.o)
+OBJS += $(CFILE:.c=.o)
+OBJS += $(LIB_BABA:.c=.o)
+
+# Recipes
+	
+.PHONY: all
+all: $(TARGET).bin
+
+%.o: %.S
+	$(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
+
+$(TARGET).elf: $(OBJS)
+	$(CC) $^ $(LFLAGS) -o $@
+
+$(TARGET).bin: $(TARGET).elf
+	$(OC) -S -O binary $< $@
+	$(OS) $<
+
+
+.PHONY: gdb
+gdb: $(TARGET).elf
+	arm-none-eabi-gdb $(TARGET).elf
+
+.PHONY: s
+s: $(TARGET).bin
+	gcc $(INCLUDE) -S -fverbose-asm -O2 $(CFILE)
+
+.PHONY: clean
+clean:
+	del $(TARGET).elf $(TARGET).bin
+	del /s .\src\*.o
+	del /s .\core\lib\src\*.o
+	del $(TARGET).s
+
+.PHONY: flash
+flash:
+	st-flash write $(TARGET).bin $(START_ADDRESS)

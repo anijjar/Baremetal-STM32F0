@@ -3,6 +3,7 @@
 
 *\*.o
 
-*\main.s
-*\main.bin
-*\main.elf
+*\*.exe
+*\*.s
+*\*.bin
+*\*.elf

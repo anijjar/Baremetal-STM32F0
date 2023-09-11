@@ -1,7 +1,6 @@
 #include "main.h"
 #include "_rcc.h"
 #include "onboardPeriph.h"
-#include "timer.h"
 
 
 int main(void) {
