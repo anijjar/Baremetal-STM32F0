@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "stm32f0xx.h"
 
-
+#define DEVICE_TAG  "PROJECT NAME HERE"
 #define TOGGLE_BIT(REG, BIT)   ((REG) ^= (BIT))
 
 /*

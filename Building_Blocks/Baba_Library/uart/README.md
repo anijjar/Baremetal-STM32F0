@@ -42,3 +42,4 @@ The flash memory locations have a max speed of 24MHz. Therefore, when using cloc
 We can improve performance by using the "Flash Prefetch Buffer" to fetch a few more instructions.
 
 # UART
+Drop in files to any empty project to get running. Removed other files to reduce redundancy

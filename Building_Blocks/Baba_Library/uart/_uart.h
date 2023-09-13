@@ -13,6 +13,8 @@ DMA version (not implemented)
 Polling/Interrupt version
 - Pros: quick and simple
 - Cons: higher cpu overhead
+
+Incomplete, but modify as we go
 */
 
 typedef enum {
