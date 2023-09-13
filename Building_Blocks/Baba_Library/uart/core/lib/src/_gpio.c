@@ -1,9 +1,8 @@
 
-#include "_exti.h"
+#include "_gpio.h"
 
-static void _Config_EXTI_GPIO( uint8_t pin, Syscfg_exticr_t port, Exti_trigger_t trigger, IRQn_Type IRQn ){
-    // assert( pin >= 0 && pin < 16 );
-    // assert(IRQn == EXTI0_1_IRQn || IRQn == EXTI2_3_IRQn || IRQn == EXTI4_15_IRQn);
+
+static void EXTI_GPIO_CONFIG( ePin_t pin, eSyscfgExticr_t port, eExtiTrigger_t trigger){
 
     // Turn on the Syscfg clock
     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGCOMPEN);
@@ -21,13 +20,12 @@ static void _Config_EXTI_GPIO( uint8_t pin, Syscfg_exticr_t port, Exti_trigger_t
     SET_BIT( EXTI->FTSR, (trigger & 0x2) << pin);
 }
 
-void NVIC_Enable_Interrupt( IRQn_Type IRQn, NVIC_Priority_t priority ) {
+void NVIC_ENABLE_INTERRUPT( IRQn_Type IRQn, eNVICPriority_t priority ) {
     NVIC_SetPriority(IRQn, priority);
     NVIC_EnableIRQ(IRQn);
 }
 
-void EXTI_GPIO_Init( uint8_t pin, Syscfg_exticr_t port, Exti_trigger_t trigger, IRQn_Type IRQn, NVIC_Priority_t priority ){
-    _Config_EXTI_GPIO(pin, port, trigger, IRQn);
-    NVIC_Enable_Interrupt(IRQn, priority);
+void EXTI_GPIO_INIT(sEXTI_t * packet){
+    EXTI_GPIO_CONFIG(packet->pin, packet->port, packet->trig);
+    NVIC_ENABLE_INTERRUPT(packet->IRQn, packet->pri);
 }
-

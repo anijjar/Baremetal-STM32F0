@@ -36,7 +36,10 @@ int Reset_8BitCircularBuffer(sCircBuff8bit_t * buf){
     buf->writeIndx = 0;
     buf->readIndx = 0;
     buf->flags = 0x04;
-    memset(buf->arr, 0, sizeof(buf->arr));
+    for(int i = 0; i < buf->maxLen; i++){
+        buf->arr[i] = 0;
+    }
+    // memset(buf->arr, 0, sizeof(buf->arr[0])); // undefined reference fix it.
     return 0;
 }
 
@@ -101,6 +104,11 @@ int Pop_8BitCircularBuffer(sCircBuff8bit_t * buf, uint8_t * ret){
 
     *ret = buf->arr[buf->readIndx];
     buf->readIndx = (buf->readIndx + 1) % buf->maxLen;
+    // if the reading pointer meets the writing pointer,
+    // set the empty flag
+    if(Size_8BitCircularBuffer(buf) == 0){
+        buf->flags |= CIRCULAR_BUFFER_FLAG_EMPTY;
+    }
     return 0;
 }
 

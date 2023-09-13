@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "stm32f0xx.h"
 
-
+#define DEVICE_TAG  "PROJECT: UART\r\n"
 #define TOGGLE_BIT(REG, BIT)   ((REG) ^= (BIT))
 
 /*
@@ -40,14 +40,33 @@ OUTPUT CLOCK SIGNAL SETUP
 USART HIGH-LEVEL SETUP
 - See the _uart.h file for other defines.
 */
-#define USART_1_BUFFER_SIZE 10U
-#define USART_2_BUFFER_SIZE 10U
-
+#define USART_1_BUFFER_SIZE 8U
 #define USART_1_PRIORITY NVIC_PRIORITY_1
-#define USART_2_PRIORITY NVIC_PRIORITY_1
+#define USART_1_BAUD 9600U
+// #define USART_1_EXTRA_PINS_EN
+// #define USART_1_PIN_SWAP 
+// #define USART_1_DMA_RX
+// #define USART_1_DMA_TX
+// #define USART_1_OVER8
+// #define USART_1_PARITY_ODD
+#define USART_1_IT // Enable NVIC Interrupt handle
+// #define USART_1_TC_IT // Transmission Complete Interrupt
+// #define USART_1_TXE_IT // Transmit DR Empty Interrupt
+#define USART_1_RXNE_IT // Receive DR Empty Interrupt
 
-#define USART_1_BAUD 115200U
-#define USART_2_BAUD 9600U
-/* END OF OUTPUT CLOCK SIGNAL SETUP */
+#define USART_2_BUFFER_SIZE 8U
+#define USART_2_PRIORITY NVIC_PRIORITY_1
+#define USART_2_BAUD 115200U
+// #define USART_2_EXTRA_PINS_EN
+// #define USART_2_PIN_SWAP 
+// #define USART_2_DMA_RX
+// #define USART_2_DMA_TX
+// #define USART_2_OVER8
+// #define USART_2_PARITY_ODD
+#define USART_2_IT // Enable NVIC Interrupt handle
+// #define USART_2_TC_IT // Transmission Complete Interrupt
+// #define USART_2_TXE_IT // Transmit DR Empty Interrupt
+#define USART_2_RXNE_IT // Receive DR Empty Interrupt
+/* END OF USART HIGH-LEVEL SETUP */
 
 #endif

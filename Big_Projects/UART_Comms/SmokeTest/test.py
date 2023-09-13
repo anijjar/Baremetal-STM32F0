@@ -1,1 +1,0 @@
-# This file will connect to a COM port and communicate with the STM

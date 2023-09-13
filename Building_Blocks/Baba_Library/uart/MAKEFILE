@@ -39,7 +39,6 @@ CFLAGS += --specs=nosys.specs
 LIB_BABA = .\core\lib\src\_gpio.c
 LIB_BABA += .\core\lib\src\_rcc.c
 LIB_BABA += .\core\lib\src\_uart.c
-LIB_BABA += .\core\lib\src\circularBuffer.c
 
 # Linker Directives
 LSCRIPT = .\core\linker\STM32F030R8T6.ld
