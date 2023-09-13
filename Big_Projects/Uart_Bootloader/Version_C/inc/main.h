@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "stm32f0xx.h"
 
-#define DEVICE_TAG  "PROJECT: UART\r\n"
+#define DEVICE_TAG  "PROJECT:"
 #define TOGGLE_BIT(REG, BIT)   ((REG) ^= (BIT))
 
 /*
