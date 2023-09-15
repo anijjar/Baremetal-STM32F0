@@ -69,7 +69,7 @@ void USARTx_INIT(eUsartPeriperal_t periph, sGPIO_t sTx, sGPIO_t sRx, uint32_t ba
         #endif
 
         //Set the oversampling and baudrate
-        usartdiv =  CORE_CLOCK_HZ / baud;
+        usartdiv =  SystemCoreClock / baud;
         #ifdef USART_1_OVER8
             SET_BIT(USART1->CR1, USART_CR1_OVER8);
             WRITE_REG(USART1->BRR, (uint16_t)(usartdiv & 0xFFF0) | (uint16_t)((usartdiv & 0x000F) >> 1));
@@ -145,7 +145,7 @@ void USARTx_INIT(eUsartPeriperal_t periph, sGPIO_t sTx, sGPIO_t sRx, uint32_t ba
         #endif
 
         //Set the oversampling and baudrate
-        usartdiv =  CORE_CLOCK_HZ / baud;
+        usartdiv =  SystemCoreClock / baud;
         #ifdef USART_2_OVER8
             SET_BIT(USART2->CR1, USART_CR1_OVER8);
             WRITE_REG(USART2->BRR, (uint16_t)(usartdiv & 0xFFF0) | (uint16_t)((usartdiv & 0x000F) >> 1));

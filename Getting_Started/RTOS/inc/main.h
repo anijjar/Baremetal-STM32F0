@@ -1,9 +1,14 @@
 #ifndef _MAIN_H
 #define _MAIN_H
 
-// C Libraries here
+// C Libraries
 #include <stdint.h>
+#include <string.h>
 #include "stm32f0xx.h"
+
+// RTOS Libraries
+#include "FreeRTOS.h"
+#include "task.h"
 
 #define DEVICE_TAG  "PROJECT: UART\r\n"
 #define TOGGLE_BIT(REG, BIT)   ((REG) ^= (BIT))
@@ -15,7 +20,7 @@ SYSTEM CLOCK SETUP:
 - Next, call the function in _rcc.h
 */
 // #define _ENABLE_PLL_SYSTEM_CLOCK // _rcc.c
-#define CORE_CLOCK_HZ 8000000U //48MHz max
+#define SystemCoreClock 8000000U //48MHz max
 #define PLL_MULT RCC_CFGR_PLLMUL8
 /* END OF SYSTEM CLOCK SETUP */
 

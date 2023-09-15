@@ -15,8 +15,8 @@ OS = arm-none-eabi-size
 # it worked before because we had it in the same file.
 # but when in different files, it needs to be added individually
 # to the object name. otherwise Bin file wont be created.
-AFILE = .\core\bootloader\bootloader.s
-VECTOR_TABLE = .\vector_tables\STM32F030R8T6.s
+AFILE = .\core\device\bootloader.s
+VECTOR_TABLE = .\core\device\STM32F030R8T6.s
 ASFLAGS = -c 
 ASFLAGS += -O0 
 ASFLAGS += -mcpu=$(MCU_SPEC) 
@@ -33,7 +33,15 @@ CFLAGS += -Wall
 CFLAGS += -g
 CFLAGS += -std=c99
 CFLAGS += -mlittle-endian
-CFLAGS += --specs=nosys.specs
+CFLAGS += --specs=nosys.specs 
+
+# RTOS
+FREERTOS_DIRECTORY = .\core\freertos\Source
+LIB_RTOS += $(FREERTOS_DIRECTORY)\portable\GCC\ARM_CM0\port.c
+LIB_RTOS += $(FREERTOS_DIRECTORY)\portable\MemMang\heap_4.c # heap_4 is default
+LIB_RTOS += $(FREERTOS_DIRECTORY)\list.c
+LIB_RTOS += $(FREERTOS_DIRECTORY)\tasks.c
+LIB_RTOS += $(FREERTOS_DIRECTORY)\queue.c
 
 # C compiler - Libraries
 LIB_BABA = .\core\lib\src\_gpio.c
@@ -41,7 +49,7 @@ LIB_BABA += .\core\lib\src\_rcc.c
 LIB_BABA += .\core\lib\src\_uart.c
 
 # Linker Directives
-LSCRIPT = .\core\linker\STM32F030R8T6.ld
+LSCRIPT = .\core\device\STM32F030R8T6.ld
 LFLAGS = -mcpu=$(MCU_SPEC)
 LFLAGS += -mthumb
 LFLAGS += -Wall
@@ -51,14 +59,16 @@ LFLAGS += -lgcc
 LFLAGS += -T$(LSCRIPT)
 
 INCLUDE = -I inc
-INCLUDE += -I .\core\device_header
+INCLUDE += -I .\core\header
 INCLUDE += -I .\core\lib\inc
+INCLUDE += -I $(FREERTOS_DIRECTORY)\include
+INCLUDE += -I $(FREERTOS_DIRECTORY)\portable\GCC\ARM_CM0
 
 OBJS = $(AFILE:.S=.o)
 OBJS += $(VECTOR_TABLE:.S=.o)
 OBJS += $(CFILE:.c=.o)
+OBJS += $(LIB_RTOS:.c=.o)
 OBJS += $(LIB_BABA:.c=.o)
-
 # Recipes
 	
 .PHONY: all

@@ -5,7 +5,9 @@ ENTRY(Reset_Handler)
 /* 8k of SRAM starting @ 0x20000000*/
 _estack = 0x20001FFF;
 
-_Min_Heap_Size = 0x200; /* required amount of heap */
+/* Throw an error if there is less than 256 Bytes left*/
+/* RTOS Takes alot of memory*/
+_Min_Heap_Size = 0x100; /* required amount of heap */
 _Min_Stack_Size = 0x400; /* required amount of stack */
 
 /* Define memory to tell linker how much memory we have */
