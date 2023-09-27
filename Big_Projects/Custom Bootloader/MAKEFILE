@@ -1,0 +1,83 @@
+BOOT = Bootloader
+BOOTLOADER_SIZE = 0x1000
+BOOT_ADDRESS = 0x8000000
+
+APP = main
+
+# Toolchain definitions (ARM defaults)
+CC = arm-none-eabi-gcc
+AS = arm-none-eabi-as
+LD = arm-none-eabi-ld
+OC = arm-none-eabi-objcopy
+OD = arm-none-eabi-objdump
+OS = arm-none-eabi-size
+
+# Assembly Directives
+AFILE = .\core\startup.s
+ASFLAGS = -c 
+ASFLAGS += -O0 
+ASFLAGS += -mcpu=cortex-m0
+ASFLAGS += -mthumb 
+ASFLAGS += -Wall
+
+# C compiler Directives
+CFILE = .\src\$(BOOT).c
+CFILE += .\app1\main.c
+CFLAGS = -mcpu=cortex-m0
+CFLAGS += -mthumb
+CFLAGS += -Wall
+CFLAGS += -g
+CFLAGS += -std=c99
+CFLAGS += -mlittle-endian
+CFLAGS += --specs=nosys.specs
+
+# Linker Directives
+LSCRIPT = .\core\$(BOOT).ld
+LFLAGS = -mcpu=cortex-m0
+LFLAGS += -mthumb
+LFLAGS += -Wall
+LFLAGS += --specs=nosys.specs
+LFLAGS += -nostdlib
+LFLAGS += -lgcc
+LFLAGS += -T$(LSCRIPT)
+
+INCLUDE = -I inc
+
+OBJS = $(AFILE:.S=.o)
+OBJS += $(CFILE:.c=.o)
+
+# Recipes
+
+.PHONY: all
+all: $(BOOT).bin $(APP).bin
+	cat $^ > $@
+
+%.o: %.S
+	$(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
+
+$(BOOT).elf: $(OBJS)
+	$(CC) $^ $(LFLAGS) -o $@
+
+$(BOOT).bin: $(BOOT).elf
+	$(OC) --pad-to=0x4000 --gap-fill=0xFF -O binary $< $@
+	$(OS) $<
+	
+$(APP).elf: $(OBJS)
+	$(CC) $^ $(LFLAGS) -T$(LSCRIPT) -o $@
+
+$(APP).bin: $(APP).elf
+	$(OC) -O binary $< $@
+	$(OS) $<
+
+
+.PHONY: clean
+clean:
+	del $(BOOT).elf $(BOOT).bin
+	del /s .\src\*.o
+
+.PHONY: flash_bootloader
+flash_bootloader:
+	st-flash write $(BOOT).bin $(BOOT_ADDRESS)

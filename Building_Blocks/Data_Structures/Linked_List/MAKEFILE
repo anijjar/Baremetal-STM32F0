@@ -2,6 +2,6 @@
 
 .PHONY all:
 all:
-	gcc -o AllTest .\linkedList.c .\linkedList.c ..\..\cutest-1.5\CuTest.c
+	gcc -o AllTest .\linkedList.c .\linkedList.c ..\..\Testing\cutest-1.5\CuTest.c
 	AllTest
 	del *.exe

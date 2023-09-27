@@ -1,0 +1,94 @@
+TARGET = main
+START_ADDRESS = 0x8000000
+MCU_SPEC = cortex-m0
+
+# Toolchain definitions (ARM defaults)
+CC = arm-none-eabi-gcc
+AS = arm-none-eabi-as
+LD = arm-none-eabi-ld
+OC = arm-none-eabi-objcopy
+OD = arm-none-eabi-objdump
+OS = arm-none-eabi-size
+
+# Assembly Directives
+AFILE = .\core\device\startup.s
+ASFLAGS = -c 
+ASFLAGS += -O0 
+ASFLAGS += -mcpu=$(MCU_SPEC) 
+ASFLAGS += -mthumb 
+ASFLAGS += -Wall
+
+# C compiler Directives
+CFILE = .\src\$(TARGET).c
+CFLAGS = -mcpu=$(MCU_SPEC)
+CFLAGS += -mthumb
+CFLAGS += -Wall
+CFLAGS += -g
+CFLAGS += -std=c99
+CFLAGS += -mlittle-endian
+CFLAGS += --specs=nosys.specs
+
+# C compiler - Libraries
+LIB_BABA = .\core\system\src\gpio.c
+LIB_BABA += .\core\system\src\rcc.c
+LIB_BABA += .\core\system\src\uart.c
+LIB_BABA += .\core\toolkit\src\led.c
+
+# Linker Directives
+LSCRIPT = .\core\device\mem.ld
+LFLAGS = -mcpu=$(MCU_SPEC)
+LFLAGS += -mthumb
+LFLAGS += -Wall
+LFLAGS += --specs=nosys.specs
+LFLAGS += -nostdlib
+LFLAGS += -lgcc
+LFLAGS += -T$(LSCRIPT)
+
+INCLUDE = -I inc
+INCLUDE += -I .\core\device_header
+INCLUDE += -I .\core\toolkit\inc
+INCLUDE += -I .\core\system\inc
+
+OBJS = $(AFILE:.S=.o)
+OBJS += $(CFILE:.c=.o)
+OBJS += $(LIB_BABA:.c=.o)
+
+# Recipes
+	
+.PHONY: all
+all: $(TARGET).bin
+
+%.o: %.S
+	$(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
+
+$(TARGET).elf: $(OBJS)
+	$(CC) $^ $(LFLAGS) -o $@
+
+$(TARGET).bin: $(TARGET).elf
+	$(OC) -S -O binary $< $@
+	$(OS) $<
+
+
+.PHONY: gdb
+gdb: $(TARGET).elf
+	arm-none-eabi-gdb $(TARGET).elf
+
+.PHONY: s
+s: $(TARGET).bin
+	gcc $(INCLUDE) -S -fverbose-asm -O2 $(CFILE)
+
+.PHONY: clean
+clean:
+	del $(TARGET).elf $(TARGET).bin
+	del /s .\src\*.o
+	del /s .\core\system\src\*.o
+	del /s .\core\toolkit\src\*.o
+
+	
+
+.PHONY: flash
+flash:
+	st-flash write $(TARGET).bin $(START_ADDRESS)

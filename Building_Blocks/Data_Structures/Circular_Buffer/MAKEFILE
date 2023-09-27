@@ -2,6 +2,6 @@
 
 .PHONY all:
 all:
-	gcc -o AllTest .\circularBuffer.c .\circularBufferTest.c ..\..\cutest-1.5\CuTest.c
+	gcc -o AllTest .\circularBuffer.c .\circularBufferTest.c ..\..\Testing\cutest-1.5\CuTest.c
 	AllTest
 	del *.exe

@@ -1,0 +1,5 @@
+.PHONY all:
+all:
+	gcc -o AllTest ..\..\core\system\src\uart.c .\uartTest.c ..\cutest-1.5\CuTest.c
+	AllTest
+	del *.exe
